@@ -15,6 +15,8 @@ const AdvancedSearchForm: React.FC<CreateUserFormProps> = ({search, reSet}) => {
     const [form] = Form.useForm();
 
     const onFinish = (values: any) => {
+        // let status_id = values.status_id ? parseInt(values.status_id, 10) : undefined;
+        // values.status_id = status_id;
         search(values)
     };
 
@@ -35,8 +37,10 @@ const AdvancedSearchForm: React.FC<CreateUserFormProps> = ({search, reSet}) => {
                 <FormItem
                     label={'状态'}
                     name="status_id"
+                    
                 >
-                    <Select style={{width: 200}}>
+                    <Select style={{ width: 200 }}>
+                        <Option >全部</Option>
                         <Option value="1">启用</Option>
                         <Option value="0">禁用</Option>
                     </Select>

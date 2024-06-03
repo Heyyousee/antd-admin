@@ -16,7 +16,7 @@ const User: React.FC = () => {
     const [isShowRoleModal, setShowRoleModal] = useState<boolean>(false);
     const [userListData, setUserListData] = useState<UserVo[]>([]);
     const [currentUser, setCurrentUser] = useState<UserVo>({
-        create_time: "", id: 0, mobile: "", real_name: "", remark: "", sort: 0, status_id: 0, update_time: ""
+        create_time: "", id: 0, mobile: "", user_name: "", remark: "", sort: 0, status_id: 0, update_time: ""
     });
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
@@ -30,7 +30,7 @@ const User: React.FC = () => {
         },
         {
             title: '用户名',
-            dataIndex: 'real_name',
+            dataIndex: 'user_name',
         },
         {
             title: '排序',
@@ -136,7 +136,7 @@ const User: React.FC = () => {
     //删除单条数据
     const showDeleteConfirm = (user: UserVo) => {
         Modal.confirm({
-            content: `确定删除${user.real_name}吗?`,
+            content: `确定删除${user.user_name}吗?`,
             async onOk() {
                 await handleRemove([user.id]);
             },
@@ -157,7 +157,7 @@ const User: React.FC = () => {
     };
 
     const handleSearchOk = async (user: UserVo) => {
-        let res = await userList({current: currentPage, ...user, pageSize})
+        let res = await userList({ current: currentPage, ...user, pageSize })
         setTotal(res.total)
         res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
     };

@@ -26,7 +26,7 @@ const User: React.FC = () => {
         },
         {
             title: '用户名',
-            dataIndex: 'real_name',
+            dataIndex: 'user_name',
         },
         {
             title: '排序',
@@ -111,7 +111,7 @@ const User: React.FC = () => {
     //删除单条数据
     const showDeleteConfirm = (user: UserVo) => {
         Modal.confirm({
-            content: `确定删除${user.real_name}吗?`,
+            content: `确定删除${user.user_name}吗?`,
             async onOk() {
                 await handleRemove([user.id]);
             },

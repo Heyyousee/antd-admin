@@ -49,7 +49,7 @@ axiosInstance.interceptors.response.use(
             showMessage(response.status);
             if (response.status === 401) {
                 storageUtils.logout()
-                window.location.href = "/antd/login";
+                window.location.href = "/login";
             }
             return Promise.reject(response.data);
         } else {

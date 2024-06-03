@@ -11,7 +11,7 @@ export interface UserVo {
     create_time: string;
     id: number;
     mobile: string;
-    real_name: string;
+    user_name: string;
     remark: string;
     sort: number;
     status_id: number;
