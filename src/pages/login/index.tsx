@@ -7,13 +7,15 @@ import {reqLogin} from "./service";
 import {IResponse} from "../../api/ajax";
 import {useNavigate} from "react-router-dom";
 import {storageUtils} from "../../utils/storageUtils";
+import md5 from 'js-md5';
 
 const Login: React.FC = () => {
 
     let navigate = useNavigate();
 
     const onFinish = async (values: any) => {
-        const {mobile, password} = values;
+        let { mobile, password } = values;
+        password = md5.md5(password);
         let res: IResponse = await reqLogin({mobile, password})
         if (res.code === 0) {
             storageUtils.saveToken(res.data)
@@ -77,3 +79,5 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
+
