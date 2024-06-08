@@ -5,4 +5,4 @@
 - `npm start`
 - 修改package.json, `"craco-less": "^3.0.0",`
 `npm audit fix --force`
-- `npm install js-md5 --save `
+- `npm install md5 --save `

@@ -85,7 +85,7 @@ const UpdateMenuForm: React.FC<UpdateMenuFormProps> = ({open, onCreate, onCancel
                         <Input/>
                     </FormItem>
                 }
-                {menuType === 3 &&
+                {menuType !== 1 &&
                     <FormItem
                         label="接口地址"
                         name="api_url"
