@@ -6,32 +6,78 @@ import {storageUtils} from "../../utils/storageUtils";
 import moment from 'moment'
 import {useNavigate} from "react-router-dom";
 import useStore from "../../store";
+import i18n from 'i18next';
 
-const items: MenuProps['items'] = [
+const t = i18n.t;
+
+const items = () => {
+    let items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: t('header.personal-center'), 
+            icon: <UserOutlined/>
+        },
+        {
+            key: '2',
+            label: t('header.personal-settings'),
+            icon: <SettingOutlined/>
+        },
+        {
+            type: 'divider',
+        },
+        {
+            key: '3',
+            label: t('header.sign-out'),
+            icon: <LogoutOutlined/>
+        },
+    ];
+    return items;
+};
+
+const langs: MenuProps['items'] = [
     {
-        key: '1',
-        label: '个人中心',
+        key: 'zh',
+        label: '简体', 
         icon: <UserOutlined/>
     },
     {
-        key: '2',
-        label: '个人设置',
+        key: 'tw',
+        label: '繁体',
         icon: <SettingOutlined/>
     },
     {
-        type: 'divider',
-    },
-    {
-        key: '3',
-        label: '退出登录',
+        key: 'en',
+        label: 'EN',
         icon: <LogoutOutlined/>
     },
 ];
+
+interface LangMap {
+    [key: string]: string;
+}
+
+const langMap: LangMap = {
+    en: 'EN',
+    zh: '简体',
+    tw: '繁体'
+};
+
 
 
 const MyHeader: React.FC = () => {
     const {userName, avatar} = useStore()as any;
     let navigate = useNavigate();
+
+    // #region 切换语言
+    const lang = storageUtils.getI18n();
+    const [language, setLanguage] = useState(lang);
+    const languageChange = (value:any) => {
+        setLanguage(value);
+        // 切换语言时修改缓存数据
+        storageUtils.setI18n(value);
+        window.location.reload();
+    }
+    // #endregion
 
     const [currentTime, setCurrentTime] = useState<string>(moment().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -52,11 +98,23 @@ const MyHeader: React.FC = () => {
         }
     };
 
+    const onClick_lang: MenuProps['onClick'] = ({key}) => {
+        languageChange(key);
+    };
     return (
-        <Space style={{float: "right", marginRight: 30}}>
+        <Space style={{ float: "right", marginRight: 30 }}>
+            <span style={{ marginRight: 10 }}>{currentTime}</span>
+            <Dropdown menu={{items: langs, onClick: onClick_lang}} placement="bottom" arrow>
+                <a onClick={(e) => e.preventDefault()}>
+                    <Space>
+                        {langMap[language]}
+                        <DownOutlined/>
+                    </Space>
+                </a>
+            </Dropdown>
             <Avatar src={avatar}
                     alt="avatar"/>
-            <Dropdown menu={{items, onClick}} placement="bottom" arrow>
+            <Dropdown menu={{items: items(), onClick}} placement="bottom" arrow>
                 <a onClick={(e) => e.preventDefault()}>
                     <Space>
                         {userName}

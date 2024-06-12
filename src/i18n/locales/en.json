@@ -1,0 +1,13 @@
+{
+  "login.deng-lu": "Log in",
+  "login.mi-ma-ti-si": "Password is required!",
+  "login.password": "password",
+  "login.react-xiang-mu": "React backend management system",
+  "login.username": "username",
+  "login.wang-ji-mi-ma": "forget the password",
+  "login.yong-hu-ming-ti-si": "Username is required!",
+  "login.zi-dong-deng-lu": "auto login",
+  "header.personal-center": "Personal center",
+  "header.personal-settings": "Personal settings",
+  "header.sign-out": "Sign out"
+}
