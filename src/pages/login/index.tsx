@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Button, Checkbox, Form, Input, message} from 'antd';
 import "./index.less"
@@ -8,9 +8,11 @@ import {IResponse} from "../../api/ajax";
 import {useNavigate} from "react-router-dom";
 import {storageUtils} from "../../utils/storageUtils";
 import md5 from 'md5';
+import i18n from 'i18next';
+import SelectLang from '../../components/selectLang';
 
 const Login: React.FC = () => {
-
+    const t = i18n.t;
     let navigate = useNavigate();
 
     const onFinish = async (values: any) => {
@@ -32,10 +34,16 @@ const Login: React.FC = () => {
 
     return (
         <div className='container'>
+            <div className={'language'}>
+                <SelectLang />
+            </div>
             <div className={'header'}>
                 <img src={logo} alt="logo"/>
-                <h1>React 项目: 后台管理系统</h1></div>
+                <h1>{t('pages.welcome.link')}</h1>
+            </div>
+            
             <div className={'content'}>
+           
                 <Form
                     name="normal_login"
                     className="login-form"
@@ -44,33 +52,33 @@ const Login: React.FC = () => {
                 >
                     <Form.Item
                         name="mobile"
-                        rules={[{required: true, message: '用户名是必填项！'}]}
+                        rules={[{required: true, message: t('pages.login.username.required')}]}
                     >
-                        <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Username"/>
+                        <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder={t('pages.login.username.placeholder')}/>
                     </Form.Item>
                     <Form.Item
                         name="password"
-                        rules={[{required: true, message: '密码是必填项！'}]}
+                        rules={[{required: true, message: t('pages.login.password.required')}]}
                     >
                         <Input
-                            prefix={<LockOutlined className="site-form-item-icon"/>}
+                            prefix={<LockOutlined className="site-form-item-icon" />}
                             type="password"
-                            placeholder="Password"
+                            placeholder={t('pages.login.password.placeholder')}
                         />
                     </Form.Item>
                     <Form.Item className={'login-form-item'}>
                         <Form.Item name="remember" valuePropName="checked" className={'login-form-remember'}>
-                            <Checkbox>自动登录</Checkbox>
+                            <Checkbox>{t('pages.login.rememberMe')}</Checkbox>
                         </Form.Item>
 
                         <a className="login-form-forgot" href="">
-                            忘记密码
+                            {t('pages.login.forgotPassword')}
                         </a>
                     </Form.Item>
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button">
-                            登录
+                            {t('pages.login.submit')}
                         </Button>
                     </Form.Item>
                 </Form></div>

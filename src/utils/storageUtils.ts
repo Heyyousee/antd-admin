@@ -1,7 +1,10 @@
+
 const USER_TOKEN = 'token'
 const USER_Name = 'name'
 const BTN_MENU = 'btnMenu'
 const TREE_MENU = 'treeMenu'
+const LANGUAGES = 'i18nextLng'
+
 /*
 包含n 个操作local storage 的工具函数的模块
 */
@@ -37,7 +40,23 @@ export const storageUtils = {
         let treeMenu = localStorage.getItem(TREE_MENU);
         return treeMenu != null ? JSON.parse(treeMenu) : [];
     },
+    
+    setLocal(key: string, value: any) {
+        localStorage.setItem(key, JSON.stringify(value))
+    },
+    
+    getLocal(key: string): any {
+        let value = localStorage.getItem(key);
+        return value != null ? JSON.parse(value) : null;
+    },
 
+    setI18n(lng: string) {
+        localStorage.setItem(LANGUAGES, lng)
+    },
+
+    getI18n(): string {
+        return localStorage.getItem(LANGUAGES) || 'zh'
+    },
 
     logout() {
         localStorage.removeItem(USER_TOKEN)

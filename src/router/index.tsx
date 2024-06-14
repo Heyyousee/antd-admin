@@ -13,7 +13,7 @@ import Setting from "../pages/account/settings";
 const routes = [
     {
         path: "/home",
-        element: <Home/>
+        element:<Home/>,
     },
     {
         path: "/user",
@@ -57,4 +57,8 @@ const routes = [
     }
 ]
 
+// export function findByPath(pathname: string): RouteDef | undefined {
+//     return flatRouters.find((item: RouteDef) => item.path === pathname);
+//     // return null;
+// }
 export default routes

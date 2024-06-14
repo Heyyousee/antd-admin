@@ -21,12 +21,10 @@ const {Header, Content, Footer, Sider} = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
 
 function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
-
     return {key, icon, children, label} as MenuItem;
 }
 
 function getMyItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, parent_id?: number, id?: number): MyMenuItem {
-
     return {label, key, icon, parent_id, id} as MyMenuItem;
 }
 
@@ -50,25 +48,6 @@ function getMyItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNod
 //     ]),
 // ];
 
-// const items: MenuItem[] = [
-//     getItem(<span>首页</span>, '1', <PieChartOutlined/>),
-//     getItem(<span>系统管理</span>, '2', <UserOutlined/>, [
-//         getItem(<span>用户管理</span>, '/user'),
-//         getItem(<span>角色管理</span>, '/role'),
-//         getItem(<span>菜单管理</span>, '/menu'),
-//     ]),
-//     getItem(<span>日志管理</span>, '6', <DesktopOutlined/>, [
-//         getItem(<span>登录日志</span>, '7')]),
-//     getItem(<span>常用图表</span>, '8', <UserOutlined/>, [
-//         getItem(<span>饼图</span>, '9'),
-//         getItem(<span>线图</span>, '10'),
-//         getItem(<span>柱状图</span>, '11'),
-//     ]),
-//     getItem(<span>个人中心</span>, '12', <UserOutlined/>, [
-//         getItem(<span>个人中心</span>, '13'),
-//         getItem(<span>个人设置</span>, '14'),
-//     ]),
-// ];
 
 const Admin: React.FC = () => {
     const {setUserName, setAvatar} = useStore()as any;
@@ -103,24 +82,24 @@ const Admin: React.FC = () => {
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                 <Link to='/home' style={{display: "flex", alignItems: "center"}}>
                     <img style={{height: 32, width: 32, margin: 16}} src={logo} alt="logo"/><h1
-                    style={{marginBottom: 0, color: "white", fontSize: 20}}>hello pro</h1>
+                    style={{marginBottom: 0, color: "white", fontSize: 20}}>hello</h1>
                 </Link>
                 <Menu theme="dark" defaultSelectedKeys={['/home']} mode="inline" items={menuItem} onClick={(item) => {
                     navigate(item.key)
                 }}/>
             </Sider>
             <Layout className="site-layout">
-                <Header style={{padding: 0, background: colorBgContainer}}><MyHeader></MyHeader></Header>
+                <Header style={{padding: 0, background: colorBgContainer,height:'40px'}}><MyHeader></MyHeader></Header>
                 <Content style={{margin: '0 16px'}}>
-                    <Breadcrumb style={{margin: '16px 0'}}>
+                    {/* <Breadcrumb style={{margin: '16px 0'}}>
                         <Breadcrumb.Item>User</Breadcrumb.Item>
                         <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
+                    </Breadcrumb> */}
                     <div style={{minHeight: 360, background: colorBgContainer}}>
                         {routesElement}
                     </div>
                 </Content>
-                <Footer style={{textAlign: 'center'}}>推荐使用谷歌浏览器，可以获得更佳页面操作体验</Footer>
+                <Footer style={{textAlign: 'center'}}>写点东西在这里</Footer>
             </Layout>
         </Layout>
     );

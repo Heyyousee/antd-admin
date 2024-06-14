@@ -6,27 +6,34 @@ import {storageUtils} from "../../utils/storageUtils";
 import moment from 'moment'
 import {useNavigate} from "react-router-dom";
 import useStore from "../../store";
+import i18n from 'i18next';
+import SelectLang from '../selectLang';
 
-const items: MenuProps['items'] = [
-    {
-        key: '1',
-        label: '个人中心',
-        icon: <UserOutlined/>
-    },
-    {
-        key: '2',
-        label: '个人设置',
-        icon: <SettingOutlined/>
-    },
-    {
-        type: 'divider',
-    },
-    {
-        key: '3',
-        label: '退出登录',
-        icon: <LogoutOutlined/>
-    },
-];
+const t = i18n.t;
+
+const items = () => {
+    let items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: t('menu.account.center'), 
+            icon: <UserOutlined/>
+        },
+        {
+            key: '2',
+            label: t('menu.account.settings'),
+            icon: <SettingOutlined/>
+        },
+        {
+            type: 'divider',
+        },
+        {
+            key: '3',
+            label: t('menu.account.logout'),
+            icon: <LogoutOutlined/>
+        },
+    ];
+    return items;
+};
 
 
 const MyHeader: React.FC = () => {
@@ -52,13 +59,17 @@ const MyHeader: React.FC = () => {
         }
     };
 
+    
     return (
-        <Space style={{float: "right", marginRight: 30}}>
-            <Avatar src={avatar}
-                    alt="avatar"/>
-            <Dropdown menu={{items, onClick}} placement="bottom" arrow>
+        <Space style={{ float: "right", marginRight: 30, height:'40px' }}>
+            <span style={{ marginRight: 10 }}>{currentTime}</span>
+           
+            <SelectLang />
+            
+            <Dropdown menu={{items: items(), onClick}} placement="bottom" arrow>
                 <a onClick={(e) => e.preventDefault()}>
                     <Space>
+                        <Avatar src={avatar} alt="avatar"/>
                         {userName}
                         <DownOutlined/>
                     </Space>
