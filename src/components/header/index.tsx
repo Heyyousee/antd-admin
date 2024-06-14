@@ -35,10 +35,32 @@ const items = () => {
     return items;
 };
 
+interface LangMap {
+    [key: string]: string;
+}
+
+const langMap: LangMap = {
+    en: 'EN',
+    zh: '简体',
+    tw: '繁体'
+};
+
+
 
 const MyHeader: React.FC = () => {
     const {userName, avatar} = useStore()as any;
     let navigate = useNavigate();
+
+    // #region 切换语言
+    const lang = storageUtils.getI18n();
+    const [language, setLanguage] = useState(lang);
+    const languageChange = (value:any) => {
+        setLanguage(value);
+        // 切换语言时修改缓存数据
+        storageUtils.setI18n(value);
+        window.location.reload();
+    }
+    // #endregion
 
     const [currentTime, setCurrentTime] = useState<string>(moment().format('YYYY-MM-DD HH:mm:ss'));
 

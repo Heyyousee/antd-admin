@@ -1,0 +1,13 @@
+{
+  "login.yong-hu-ming-ti-si": "用户名是必填项！",
+  "login.mi-ma-ti-si": "密码是必填项！",
+  "login.zi-dong-deng-lu": "自动登录",
+  "login.wang-ji-mi-ma": "忘记密码",
+  "login.deng-lu": "登录",
+  "login.react-xiang-mu": "React 后台管理系统",
+  "login.password": "密码",
+  "login.username": "用户名",
+  "header.personal-center": "个人中心",
+  "header.personal-settings": "个人设置",
+  "header.sign-out": "退出登录"
+}
