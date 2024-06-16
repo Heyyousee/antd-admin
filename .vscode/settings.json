@@ -2,7 +2,8 @@
 
     "i18n-ally.keystyle": "flat",
     "i18n-ally.localesPaths": [
-        "src/locales"
+        "src/locales",
+        "locales"
     ],
     "i18n-ally.extract.keyPrefix": "",
     "commentTranslate.targetLanguage": "zh-CN",

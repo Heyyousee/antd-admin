@@ -18,3 +18,4 @@
 - "typescript": "^4.9.5",由于react-scripts的版本限制,只能用v4版本.
 - "web-vitals": "^2.1.4",,"http-proxy-middleware": "^2.0.6",这些都不能升级
 - npm start不知道为什么,useEffect总是请求2次,build的文件又正常,搞了半天.
+- i18n 自动化: it -c i18n.config.js https://github.com/IFreeOvO/i18n-cli/tree/main/packages/i18n-extract-cli
