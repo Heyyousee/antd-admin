@@ -1,9 +1,9 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import en from '../locales/en-us.json';
-import zh from '../locales/zh-cn.json';
-import tw from '../locales/zh-tw.json';
+import en from '../locales/en-US.json';
+import zh from '../locales/zh-CN.json';
+import tw from '../locales/zh-TW.json';
 
 export const SUPPORTED_LANG = [
     'zh',
@@ -15,7 +15,7 @@ const lang = window.localStorage.getItem('i18nextLng') || 'zh';
 const option = {
     fallbackLng: lang, // 默认语言 'zh'
     debug: process.env.NODE_ENV !== 'production',
-    resources: { // 支持的语言
+    resources: { // 支持的语言 //{ ...zh , ...errors  }
         en: {
             translation: en,
         },

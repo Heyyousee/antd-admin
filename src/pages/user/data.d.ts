@@ -17,3 +17,8 @@ export interface UserVo {
     status_id: number;
     update_time: string;
 }
+
+export interface UserListSearch {
+    mobile?: string;
+    status_id?: number;
+}

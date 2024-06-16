@@ -1,225 +1,292 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Divider, message, Modal, Space, Table, Tag} from 'antd';
-import type {ColumnsType} from 'antd/es/table';
-import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons';
-import {MenuVo} from './data.d';
-import CreateMenuForm from "./components/add_menu";
-import UpdateMenuForm from "./components/update_menu";
-import {addMenu, handleResp, menuList, removeMenu, updateMenu} from "./service";
-import {tree} from "../../utils/treeUtils";
-import {IResponse} from "../../api/ajax";
+import { t } from 'i18next'
+import React, { useEffect, useState } from 'react'
+import { Button, Divider, message, Modal, Space, Table, Tag } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { MenuVo } from './data.d'
+import CreateMenuForm from './components/add_menu'
+import UpdateMenuForm from './components/update_menu'
+import {
+  addMenu,
+  handleResp,
+  menuList,
+  removeMenu,
+  updateMenu,
+} from './service'
+import { tree } from '../../utils/treeUtils'
+import { IResponse } from '../../api/ajax'
 
 const Menu: React.FC = () => {
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [isShowAddModal, setShowAddModal] = useState<boolean>(false);
-    const [isShowEditModal, setShowEditModal] = useState<boolean>(false);
-    const [menuListData, setMenuListData] = useState<MenuVo[]>([]);
-    const [currentMenu, setCurrentMenu] = useState<MenuVo>();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const [isShowAddModal, setShowAddModal] = useState<boolean>(false)
+  const [isShowEditModal, setShowEditModal] = useState<boolean>(false)
+  const [menuListData, setMenuListData] = useState<MenuVo[]>([])
+  const [currentMenu, setCurrentMenu] = useState<MenuVo>()
+  const [needLoad, setNeedLoad] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
 
-    const columns: ColumnsType<MenuVo> = [
-        {
-            title: '菜单名称',
-            dataIndex: 'menu_name',
-            render: (text: string) => <a>{text}</a>,
-        },
-        {
-            title: '路径',
-            dataIndex: 'menu_url',
-        },
-        {
-            title: '接口地址',
-            dataIndex: 'api_url',
-        },
-        {
-            title: '类型',
-            dataIndex: 'menu_type',
-            render: (_, {menu_type}) => (
-                <>
-                    {
-                        menu_type === 1 && (<Tag color={'#ef62df'} style={{width: 50, height: 30, textAlign: "center", paddingTop: 4}}>
-                            目录
-                        </Tag>)
-                    }
-                    {
-                        menu_type === 2 && (<Tag color={'#3f80e9'} style={{width: 50, height: 30, textAlign: "center", paddingTop: 4}}>
-                            菜单
-                        </Tag>)
-                    }
-                    {
-                        menu_type === 3 && (<Tag color={'#67c23a'} style={{width: 50, height: 30, textAlign: "center", paddingTop: 4}}>
-                            功能
-                        </Tag>)
-                    }
-                </>
-            ),
-        },
-        {
-            title: '排序',
-            dataIndex: 'sort',
-        },
-        {
-            title: '图标',
-            dataIndex: 'icon',
-        },
-        {
-            title: '状态',
-            dataIndex: 'status_id',
-            render: (_, {status_id}) => (
-                <>
-                    {
-                        <Tag color={status_id === 0 ? '#ff4d4f' : '#67c23a'} style={{width: 50, height: 30, textAlign: "center", paddingTop: 4}}>
-                            {status_id === 0 ? '禁用' : '启用'}
-                        </Tag>
-                    }
-                </>
-            ),
-        },
-        {
-            title: '备注',
-            dataIndex: 'remark',
-        },
-        // {
-        //     title: '创建时间',
-        //     dataIndex: 'create_time',
-        // },
-        // {
-        //     title: '更新时间',
-        //     dataIndex: 'update_time',
-        // },
-        {
-            title: '操作',
-            key: 'action',
-            render: (_, record) => (
-                <Space size="small">
-                    <Button type="primary" icon={<EditOutlined/>} onClick={() => showEditModal(record)}>编辑</Button>
-                    <Button type="primary" danger icon={<DeleteOutlined/>}
-                            onClick={() => showDeleteConfirm(record)}>删除</Button>
-                </Space>
-            ),
-        },
-    ];
+  const columns: ColumnsType<MenuVo> = [
+    {
+      title: t('菜单名称'),
+      dataIndex: 'menu_name',
+      render: (text: string) => <a>{text}</a>,
+    },
+    {
+      title: t('路径'),
+      dataIndex: 'menu_url',
+    },
+    {
+      title: t('接口地址'),
+      dataIndex: 'api_url',
+    },
+    {
+      title: t('类型'),
+      dataIndex: 'menu_type',
+      render: (_, { menu_type }) => (
+        <>
+          {menu_type === 1 && (
+            <Tag
+              color={'#ef62df'}
+              style={{
+                width: 50,
+                height: 30,
+                textAlign: 'center',
+                paddingTop: 4,
+              }}
+            >
+              {t('目录')}
+            </Tag>
+          )}
 
-    const showModal = () => {
-        setShowAddModal(true);
-    };
+          {menu_type === 2 && (
+            <Tag
+              color={'#3f80e9'}
+              style={{
+                width: 50,
+                height: 30,
+                textAlign: 'center',
+                paddingTop: 4,
+              }}
+            >
+              {t('菜单')}
+            </Tag>
+          )}
 
-    const handleAddOk = async (menu: MenuVo) => {
-        console.log(menu)
-        if (handleResp(await addMenu(menu))) {
-            setShowAddModal(false);
-            let res = await menuList({})
-            res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-        }
+          {menu_type === 3 && (
+            <Tag
+              color={'#67c23a'}
+              style={{
+                width: 50,
+                height: 30,
+                textAlign: 'center',
+                paddingTop: 4,
+              }}
+            >
+              {t('功能')}
+            </Tag>
+          )}
+        </>
+      ),
+    },
+    {
+      title: t('排序'),
+      dataIndex: 'sort',
+    },
+    {
+      title: t('图标'),
+      dataIndex: 'icon',
+    },
+    {
+      title: t('状态'),
+      dataIndex: 'status_id',
+      render: (_, { status_id }) => (
+        <>
+          {
+            <Tag
+              color={status_id === 0 ? '#ff4d4f' : '#67c23a'}
+              style={{
+                width: 50,
+                height: 30,
+                textAlign: 'center',
+                paddingTop: 4,
+              }}
+            >
+              {status_id === 0 ? t('禁用') : t('启用')}
+            </Tag>
+          }
+        </>
+      ),
+    },
+    {
+      title: t('备注'),
+      dataIndex: 'remark',
+    },
+    // {
+    //     title: '创建时间',
+    //     dataIndex: 'create_time',
+    // },
+    // {
+    //     title: '更新时间',
+    //     dataIndex: 'update_time',
+    // },
+    {
+      title: t('操作'),
+      key: 'action',
+      render: (_, record) => (
+        <Space size="small">
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => showEditModal(record)}
+          >
+            {t('编辑')}
+          </Button>
+          <Button
+            type="primary"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => showDeleteConfirm(record)}
+          >
+            {t('删除')}
+          </Button>
+        </Space>
+      ),
+    },
+  ]
+
+  const showModal = () => {
+    setShowAddModal(true)
+  }
+
+  const handleAddOk = async (menu: MenuVo) => {
+    console.log(menu)
+    if (handleResp(await addMenu(menu))) {
+      setShowAddModal(false)
+      setNeedLoad(!needLoad)
     }
+  }
 
-    const handleAddCancel = () => {
-        setShowAddModal(false);
-    };
+  const handleAddCancel = () => {
+    setShowAddModal(false)
+  }
 
+  const showEditModal = (menu: MenuVo) => {
+    setCurrentMenu(menu)
+    setShowEditModal(true)
+  }
 
-    const showEditModal = (menu: MenuVo) => {
-        setCurrentMenu(menu)
-        setShowEditModal(true);
-    };
-
-    const handleEditOk = async (menu: MenuVo) => {
-        if (handleResp(await updateMenu(menu))) {
-            setShowEditModal(false);
-            let res = await menuList({})
-            res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-        }
-    };
-
-    const handleEditCancel = () => {
-        setShowEditModal(false);
-    };
-
-    //删除单条数据
-    const showDeleteConfirm = (menu: MenuVo) => {
-        Modal.confirm({
-            content: `确定删除${menu.menu_name}吗?`,
-            async onOk() {
-                await handleRemove([menu.id]);
-            },
-            onCancel() {
-                console.log('Cancel');
-            }
-        })
-    };
-
-    //批量删除
-    const handleRemove = async (ids: number[]) => {
-        if (handleResp(await removeMenu(ids))) {
-            let res = await menuList({})
-            res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-        }
-
-    };
-
-    const handleSearchOk = async (menu: MenuVo) => {
-        let res = await menuList({...menu,})
-        res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-    };
-
-    const handleResetOk = async () => {
-        let res = await menuList({})
-        res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-    };
-
-    const setMenuDataTree = (res: IResponse) => {
-        setMenuListData(tree(res.data, 0, "parent_id"))
+  const handleEditOk = async (menu: MenuVo) => {
+    if (handleResp(await updateMenu(menu))) {
+      setShowEditModal(false)
+      setNeedLoad(!needLoad)
     }
+  }
 
-    useEffect(() => {
-        menuList({}).then(res => {
-            res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-        });
-    }, []);
+  const handleEditCancel = () => {
+    setShowEditModal(false)
+  }
 
+  //删除单条数据
+  const showDeleteConfirm = (menu: MenuVo) => {
+    Modal.confirm({
+      content: t('确定删除{slot1}吗?', { slot1: menu.menu_name }),
+      async onOk() {
+        await handleRemove([menu.id])
+      },
+      onCancel() {
+        console.log('Cancel')
+      },
+    })
+  }
 
-    return (
-        <div style={{padding: 24}}>
-            <div>
-                <Space>
-                    <Button type="primary" icon={<PlusOutlined/>} onClick={showModal}>新建</Button>
-                </Space>
-            </div>
+  //批量删除
+  const handleRemove = async (ids: number[]) => {
+    if (handleResp(await removeMenu(ids))) {
+      setNeedLoad(!needLoad)
+    }
+  }
 
-            <Divider/>
+  const setMenuDataTree = (res: IResponse) => {
+    setMenuListData(tree(res.data, 0, 'parent_id'))
+  }
 
-            <Table
-                rowSelection={{
-                    onChange: (selectedRowKeys: React.Key[]) => {
-                        setSelectedRowKeys(selectedRowKeys)
-                    },
-                }}
-                size={"middle"}
-                columns={columns}
-                dataSource={menuListData}
-                rowKey={'id'}
-                tableLayout={"fixed"}
-                pagination={false}
-            />
+  const handleList = async () => {
+    if (loading) {
+      return
+    }
+    setLoading(true)
+    let res = await menuList({})
+    // setTotal(res.total)
+    res.code === 0 ? setMenuDataTree(res) : message.error(res.msg)
+    setTimeout(() => {
+      setLoading(false)
+    }, 1000)
+  }
 
-            <CreateMenuForm onCancel={handleAddCancel} onCreate={handleAddOk} open={isShowAddModal} menuListData={menuListData}></CreateMenuForm>
-            <UpdateMenuForm onCancel={handleEditCancel} onCreate={handleEditOk} open={isShowEditModal} menuVo={currentMenu}></UpdateMenuForm>
+  useEffect(() => {
+    handleList()
+  }, [needLoad])
 
-            {selectedRowKeys.length > 0 &&
-                <div>
-                    已选择 {selectedRowKeys.length} 项
-                    <Button style={{float: "right"}} danger icon={<DeleteOutlined/>} type={'primary'}
-                            onClick={async () => {
-                                await handleRemove(selectedRowKeys as number[]);
-                                setSelectedRowKeys([]);
-                            }}
-                    >
-                        批量删除
-                    </Button>
-                </div>
-            }
+  return (
+    <div style={{ padding: 24 }}>
+      <div>
+        <Space>
+          <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
+            {t('新建')}
+          </Button>
+        </Space>
+      </div>
 
+      <Divider />
+
+      <Table
+        rowSelection={{
+          onChange: (selectedRowKeys: React.Key[]) => {
+            setSelectedRowKeys(selectedRowKeys)
+          },
+        }}
+        size={'middle'}
+        columns={columns}
+        dataSource={menuListData}
+        rowKey={'id'}
+        tableLayout={'fixed'}
+        pagination={false}
+      />
+
+      <CreateMenuForm
+        onCancel={handleAddCancel}
+        onCreate={handleAddOk}
+        open={isShowAddModal}
+        menuListData={menuListData}
+      ></CreateMenuForm>
+      <UpdateMenuForm
+        onCancel={handleEditCancel}
+        onCreate={handleEditOk}
+        open={isShowEditModal}
+        menuVo={currentMenu}
+      ></UpdateMenuForm>
+
+      {selectedRowKeys.length > 0 && (
+        <div>
+          {t('已选择')}
+          {selectedRowKeys.length}
+          {t('项')}
+          <Button
+            style={{ float: 'right' }}
+            danger
+            icon={<DeleteOutlined />}
+            type={'primary'}
+            onClick={async () => {
+              await handleRemove(selectedRowKeys as number[])
+              setSelectedRowKeys([])
+            }}
+          >
+            {t('批量删除')}
+          </Button>
         </div>
-    );
-};
+      )}
+    </div>
+  )
+}
 
-export default Menu;
+export default Menu
