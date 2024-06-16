@@ -16,3 +16,8 @@ export interface RoleVo {
     status_id: number;
     update_time: string;
 }
+
+export interface RoleListSearch{
+    role_name?: string;
+    status_id?: number;
+}

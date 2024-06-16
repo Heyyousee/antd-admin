@@ -1,13 +1,11 @@
 import React, {useState} from 'react';
 import type {MenuProps} from 'antd';
-import {Avatar, Dropdown, Space} from 'antd';
+import {Dropdown, Space} from 'antd';
 import {DownOutlined} from "@ant-design/icons";
-import {storageUtils} from "@/utils/storageUtils";
-import i18n from 'i18next';
+import {storageUtils} from "../../utils/storageUtils";
 import { Icon } from '@iconify/react';
 import "./index.less"
 
-const t = i18n.t;
 
 const langs: MenuProps['items'] = [
     {
@@ -27,15 +25,15 @@ const langs: MenuProps['items'] = [
     },
 ];
 
-interface LangMap {
-    [key: string]: string;
-}
+// interface LangMap {
+//     [key: string]: string;
+// }
 
-const langMap: LangMap = {
-    en: 'EN',
-    zh: '简体',
-    tw: '繁体'
-};
+// const langMap: LangMap = {
+//     en: 'EN',
+//     zh: '简体',
+//     tw: '繁体'
+// };
 
 
 
@@ -44,7 +42,8 @@ const SelectLang: React.FC = () => {
     // #region 切换语言
     const lang = storageUtils.getI18n();
     const [language, setLanguage] = useState(lang);
-    const languageChange = (value:any) => {
+    const languageChange = (value: any) => {
+        console.log("=====languageChange==== "+value);
         setLanguage(value);
         // 切换语言时修改缓存数据
         storageUtils.setI18n(value);
@@ -62,7 +61,6 @@ const SelectLang: React.FC = () => {
                 <a onClick={(e) => e.preventDefault()}>
                     <Space className='space'>
                         <div className={'avatar'}><Icon icon="mdi:translate-variant" width={24} /></div>
-                        {/* <Icon icon={"circle-flags:" + language} height={20} "mdi:translate-variant"/> */}
                         <DownOutlined/>
                     </Space>
                 </a>

@@ -1,10 +1,8 @@
 {
-
   "menu.account": "个人页",
   "menu.account.center": "个人中心",
   "menu.account.settings": "个人设置",
   "menu.account.logout": "退出登录",
-
   "pages.login.accountLogin.tab": "账户密码登录",
   "pages.login.accountLogin.errorMessage": "错误的用户名和密码",
   "pages.login.failure": "登录失败，请重试！",
@@ -27,6 +25,17 @@
   "pages.login.submit": "登录",
   "pages.login.loginWith": "其他登录方式 :",
   "pages.login.registerAccount": "注册账户",
-  "pages.welcome.link": "欢迎使用"
-
+  "pages.welcome.link": "欢迎使用",
+  "message.network-error": "网络连接异常,请稍后再试!",
+  "message.status-400": "请求错误(400)",
+  "message.status-401": "未授权，请重新登录(401)",
+  "message.status-403": "拒绝访问(403)",
+  "message.status-404": "请求出错(404)",
+  "message.status-408": "请求超时(408)",
+  "message.status-500": "服务器错误(500)",
+  "message.status-501": "服务未实现(501)",
+  "message.status-502": "网络错误(502)",
+  "message.status-503": "服务不可用(503)",
+  "message.status-504": "网络超时(504)",
+  "message.status-default": "连接出错({0})!"
 }

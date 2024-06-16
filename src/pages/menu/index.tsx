@@ -15,6 +15,8 @@ const Menu: React.FC = () => {
     const [isShowEditModal, setShowEditModal] = useState<boolean>(false);
     const [menuListData, setMenuListData] = useState<MenuVo[]>([]);
     const [currentMenu, setCurrentMenu] = useState<MenuVo>();
+    const [needLoad, setNeedLoad] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const columns: ColumnsType<MenuVo> = [
         {
@@ -107,8 +109,7 @@ const Menu: React.FC = () => {
         console.log(menu)
         if (handleResp(await addMenu(menu))) {
             setShowAddModal(false);
-            let res = await menuList({})
-            res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
+            setNeedLoad(!needLoad);
         }
     }
 
@@ -125,8 +126,7 @@ const Menu: React.FC = () => {
     const handleEditOk = async (menu: MenuVo) => {
         if (handleResp(await updateMenu(menu))) {
             setShowEditModal(false);
-            let res = await menuList({})
-            res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
+            setNeedLoad(!needLoad);
         }
     };
 
@@ -150,31 +150,33 @@ const Menu: React.FC = () => {
     //批量删除
     const handleRemove = async (ids: number[]) => {
         if (handleResp(await removeMenu(ids))) {
-            let res = await menuList({})
-            res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
+            setNeedLoad(!needLoad);
         }
 
     };
 
-    const handleSearchOk = async (menu: MenuVo) => {
-        let res = await menuList({...menu,})
-        res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-    };
-
-    const handleResetOk = async () => {
-        let res = await menuList({})
-        res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-    };
 
     const setMenuDataTree = (res: IResponse) => {
         setMenuListData(tree(res.data, 0, "parent_id"))
     }
 
+    const handleList = async () => {
+        if (loading) {
+            return;
+        }
+        setLoading(true);
+        let res = await menuList({})
+        // setTotal(res.total)
+        res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+      
+    };
+
     useEffect(() => {
-        menuList({}).then(res => {
-            res.code === 0 ? setMenuDataTree(res) : message.error(res.msg);
-        });
-    }, []);
+        handleList();
+    }, [needLoad]);
 
 
     return (

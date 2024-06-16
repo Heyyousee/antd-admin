@@ -20,9 +20,9 @@ const {Header, Content, Footer, Sider} = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
-    return {key, icon, children, label} as MenuItem;
-}
+// function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+//     return {key, icon, children, label} as MenuItem;
+// }
 
 function getMyItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, parent_id?: number, id?: number): MyMenuItem {
     return {label, key, icon, parent_id, id} as MyMenuItem;
@@ -91,10 +91,10 @@ const Admin: React.FC = () => {
             <Layout className="site-layout">
                 <Header style={{padding: 0, background: colorBgContainer,height:'40px'}}><MyHeader></MyHeader></Header>
                 <Content style={{margin: '0 16px'}}>
-                    {/* <Breadcrumb style={{margin: '16px 0'}}>
+                    <Breadcrumb style={{margin: '16px 0'}}>
                         <Breadcrumb.Item>User</Breadcrumb.Item>
                         <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb> */}
+                    </Breadcrumb>
                     <div style={{minHeight: 360, background: colorBgContainer}}>
                         {routesElement}
                     </div>

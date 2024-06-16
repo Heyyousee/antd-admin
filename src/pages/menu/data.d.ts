@@ -20,3 +20,4 @@ export interface MenuVo {
     status_id: number;
     update_time: string;
 }
+

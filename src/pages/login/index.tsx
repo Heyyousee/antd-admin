@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Button, Checkbox, Form, Input, message} from 'antd';
 import "./index.less"
@@ -8,23 +8,11 @@ import {IResponse} from "../../api/ajax";
 import {useNavigate} from "react-router-dom";
 import {storageUtils} from "../../utils/storageUtils";
 import md5 from 'md5';
-import i18n from 'i18next';
+import { t } from 'i18next';
 import SelectLang from '../../components/selectLang';
 
 const Login: React.FC = () => {
-    const t = i18n.t;
     let navigate = useNavigate();
-
-    // #region 切换语言
-    const lang = storageUtils.getI18n();
-    const [language, setLanguage] = useState(lang);
-    const languageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setLanguage(e.target.value);
-        // 切换语言时修改缓存数据
-        storageUtils.setI18n(e.target.value);
-        window.location.reload();
-    }
-    // #endregion
 
     const onFinish = async (values: any) => {
         let { mobile, password } = values;

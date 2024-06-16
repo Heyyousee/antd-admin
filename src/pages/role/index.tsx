@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Divider, message, Modal, Space, Table, Tag} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import {DeleteOutlined, EditOutlined, PlusOutlined, SettingOutlined} from '@ant-design/icons';
-import {RoleVo} from './data.d';
+import {RoleListSearch, RoleVo} from './data.d';
 import CreateRoleForm from "./components/add_role";
 import UpdateRoleForm from "./components/update_role";
 import {addRole, handleResp, removeRole, roleList, update_role_menu, updateRole} from "./service";
@@ -19,6 +19,9 @@ const Role: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
     const [total, setTotal] = useState<number>(10);
+    const [needLoad, setNeedLoad] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [search, setSearch] = useState<RoleListSearch>();
 
     const columns: ColumnsType<RoleVo> = [
         {
@@ -77,9 +80,8 @@ const Role: React.FC = () => {
     const handleAddOk = async (role: RoleVo) => {
         if (handleResp(await addRole(role))) {
             setShowAddModal(false);
-            let res = await roleList({current: currentPage, pageSize})
-            setTotal(res.total)
-            res.code === 0 ? setRoleListData(res.data) : message.error(res.msg);
+    
+            setNeedLoad(!needLoad);
         }
     }
 
@@ -96,11 +98,8 @@ const Role: React.FC = () => {
     const handleEditOk = async (role: RoleVo) => {
         if (handleResp(await updateRole(role))) {
             setShowEditModal(false);
-            let res = await roleList({
-                current: currentPage, pageSize
-            })
-            setTotal(res.total)
-            res.code === 0 ? setRoleListData(res.data) : message.error(res.msg);
+  
+            setNeedLoad(!needLoad);
         }
     };
 
@@ -116,11 +115,8 @@ const Role: React.FC = () => {
     const handleMenuOk = async (role_id: Number, menu_ids: Number[]) => {
         if (handleResp(await update_role_menu(role_id, menu_ids))) {
             setShowMenuModal(false);
-            let res = await roleList({
-                current: currentPage, pageSize
-            })
-            setTotal(res.total)
-            res.code === 0 ? setRoleListData(res.data) : message.error(res.msg);
+     
+            setNeedLoad(!needLoad);
         }
     };
 
@@ -144,34 +140,43 @@ const Role: React.FC = () => {
     //批量删除
     const handleRemove = async (ids: number[]) => {
         if (handleResp(await removeRole(ids))) {
-            let res = await roleList({current: currentPage, pageSize})
-            setTotal(res.total)
-            res.code === 0 ? setRoleListData(res.data) : message.error(res.msg);
+           
+            setNeedLoad(!needLoad);
         }
 
     };
 
     const handleSearchOk = async (role: RoleVo) => {
-        let res = await roleList({current: currentPage, pageSize, ...role,})
+        let res = await roleList({current: currentPage, pageSize, ...role})
         setTotal(res.total)
         res.code === 0 ? setRoleListData(res.data) : message.error(res.msg);
+        setSearch({
+            ...role
+        });
     };
 
     const handleResetOk = async () => {
-        let res = await roleList({current: currentPage, pageSize})
+        setSearch({});
+        setNeedLoad(!needLoad);
+    };
+
+    const handleList = async () => {
+        if (loading) {
+            return;
+        }
+        setLoading(true);
+        let res = await roleList({current: currentPage, pageSize, ...search})
         setTotal(res.total)
         res.code === 0 ? setRoleListData(res.data) : message.error(res.msg);
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+      
     };
 
     useEffect(() => {
-        roleList({
-            current: currentPage, pageSize
-        }).then(res => {
-            setTotal(res.total)
-            res.code === 0 ? setRoleListData(res.data) : message.error(res.msg);
-        });
-    }, []);
-
+        handleList();
+    }, [needLoad]);
 
     const paginationProps = {
         defaultCurrent: 1,
@@ -188,9 +193,8 @@ const Role: React.FC = () => {
             console.log('onChange', page, pageSize)
             setCurrentPage(page)
             setPageSize(pageSize)
-            let res = await roleList({current: page, pageSize})
-            setTotal(res.total)
-            res.code === 0 ? setRoleListData(res.data) : message.error(res.msg);
+            setNeedLoad(!needLoad);
+      
 
         }, //改变页码的函数
         onShowSizeChange: (current: number, size: number) => {

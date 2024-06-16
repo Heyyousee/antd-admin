@@ -1,11 +1,9 @@
-import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
-import qs from 'qs'
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
 
 import {showMessage} from "./status";
 import {message} from 'antd';
 import {storageUtils} from "../utils/storageUtils";
-import {useNavigate} from "react-router-dom";
-
+import { t } from 'i18next';
 
 // 返回res.data的interface
 export interface IResponse {
@@ -21,6 +19,7 @@ export const axiosInstance: AxiosInstance = axios.create({
         Accept: "application/json",
         "Content-Type": "application/json"
     },
+    timeout: 10000,
 });
 
 // axios实例拦截响应
@@ -43,24 +42,29 @@ axiosInstance.interceptors.response.use(
     },
     // 请求失败
     (error: any) => {
+        // console.log(error);
         const {response} = error;
         if (response) {
+            // console.log(response);
             // 请求已发出，但是不在2xx的范围
             showMessage(response.status);
             if (response.status === 401) {
                 storageUtils.logout()
                 window.location.href = "/login";
             }
-            return Promise.reject(response.data);
+            return Promise.reject(response.message);
+            
         } else {
-            message.error('网络连接异常,请稍后再试!');
+            message.error(t('message.network-error'));
+            return {data:{}}
+            // return Promise.reject("Network Error");
         }
     }
 );
 
 // axios实例拦截请求
 axiosInstance.interceptors.request.use(
-    (config: AxiosRequestConfig) => {
+    (config: any) => {//AxiosRequestConfig
         const token = storageUtils.getToken()
         if (token) {
             // @ts-ignore

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Divider, message, Modal, Space, Table, Tag} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import {DeleteOutlined, EditOutlined, PlusOutlined, SettingOutlined} from '@ant-design/icons';
-import {UserVo} from './data.d';
+import {UserListSearch, UserVo} from './data.d';
 import CreateUserForm from "./components/add_user";
 import UpdateUserForm from "./components/update_user";
 import {addUser, handleResp, removeUser, update_user_role, updateUser, userList} from "./service";
@@ -21,6 +21,9 @@ const User: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
     const [total, setTotal] = useState<number>(10);
+    const [needLoad, setNeedLoad] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [search, setSearch] = useState<UserListSearch>();
 
     const columns: ColumnsType<UserVo> = [
         {
@@ -82,9 +85,8 @@ const User: React.FC = () => {
     const handleAddOk = async (user: UserVo) => {
         if (handleResp(await addUser(user))) {
             setShowAddModal(false);
-            let res = await userList({current: currentPage, pageSize})
-            setTotal(res.total)
-            res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
+        
+            setNeedLoad(!needLoad);
         }
     }
 
@@ -101,11 +103,8 @@ const User: React.FC = () => {
     const handleEditOk = async (user: UserVo) => {
         if (handleResp(await updateUser(user))) {
             setShowEditModal(false);
-            let res = await userList({
-                current: currentPage, pageSize,
-            })
-            setTotal(res.total)
-            res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
+       
+            setNeedLoad(!needLoad);
         }
     };
 
@@ -121,11 +120,8 @@ const User: React.FC = () => {
     const handleRoleOk = async (user_id: number, role_ids: number[]) => {
         if (handleResp(await update_user_role(user_id, role_ids))) {
             setShowRoleModal(false);
-            let res = await userList({
-                current: currentPage, pageSize,
-            })
-            setTotal(res.total)
-            res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
+       
+            setNeedLoad(!needLoad);
         }
     };
 
@@ -149,33 +145,42 @@ const User: React.FC = () => {
     //批量删除
     const handleRemove = async (ids: number[]) => {
         if (handleResp(await removeUser(ids))) {
-            let res = await userList({current: currentPage, mobile: "", pageSize})
-            setTotal(res.total)
-            res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
+        
+            setNeedLoad(!needLoad);
         }
 
     };
 
     const handleSearchOk = async (user: UserVo) => {
-        let res = await userList({ current: currentPage, ...user, pageSize })
-        setTotal(res.total)
-        res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
+        setSearch({
+            ...user
+        });
+        setNeedLoad(!needLoad);
     };
 
     const handleResetOk = async () => {
-        let res = await userList({current: currentPage, pageSize})
+       
+        setSearch({});
+        setNeedLoad(!needLoad);
+    };
+
+    const handleList = async () => {
+        if (loading) {
+            return;
+        }
+        setLoading(true);
+        let res = await userList({current: currentPage, pageSize, ...search})
         setTotal(res.total)
         res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+      
     };
 
     useEffect(() => {
-        userList({
-            current: currentPage, pageSize
-        }).then(res => {
-            setTotal(res.total)
-            res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
-        });
-    }, []);
+        handleList();
+    }, [needLoad]);
 
 
     const paginationProps = {
@@ -193,9 +198,8 @@ const User: React.FC = () => {
             console.log('onChange', page, pageSize)
             setCurrentPage(page)
             setPageSize(pageSize)
-            let res = await userList({current: page, pageSize})
-            setTotal(res.total)
-            res.code === 0 ? setUserListData(res.data) : message.error(res.msg);
+           
+            setNeedLoad(!needLoad);
 
         }, //改变页码的函数
         onShowSizeChange: (current: number, size: number) => {
@@ -236,10 +240,10 @@ const User: React.FC = () => {
                 <div>
                     已选择 {selectedRowKeys.length} 项
                     <Button style={{float: "right"}} danger icon={<DeleteOutlined/>} type={'primary'}
-                            onClick={async () => {
-                                await handleRemove(selectedRowKeys as number[]);
-                                setSelectedRowKeys([]);
-                            }}
+                        onClick={async () => {
+                            await handleRemove(selectedRowKeys as number[]);
+                            setSelectedRowKeys([]);
+                        }}
                     >
                         批量删除
                     </Button>
