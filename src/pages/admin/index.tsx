@@ -1,31 +1,37 @@
+import { t } from 'i18next'
 // @flow
-import {Link, useNavigate, useRoutes} from "react-router-dom";
+import { Link, useNavigate, useRoutes } from 'react-router-dom'
 
-import routes from "../../router";
+import routes from '../../router'
 
-import React, {useEffect, useState} from 'react';
-import {PieChartOutlined,} from '@ant-design/icons';
-import type {MenuProps} from 'antd';
-import {Breadcrumb, Layout, Menu, theme} from 'antd';
+import React, { useEffect, useState } from 'react'
+import { PieChartOutlined } from '@ant-design/icons'
+import type { MenuProps } from 'antd'
+import { Breadcrumb, Layout, Menu, theme } from 'antd'
 import logo from '../../assets/images/logo.svg'
 import MyHeader from '../../components/header'
-import {query_user_menu} from "./service";
-import {MyMenuItem, RecordVo} from "./data";
-import {tree} from "../../utils/treeUtils";
-import "./index.less"
-import useStore from "../../store";
+import { query_user_menu } from './service'
+import { MyMenuItem, RecordVo } from './data'
+import { tree } from '../../utils/treeUtils'
+import './index.less'
+import useStore from '../../store'
 
+const { Header, Content, Footer, Sider } = Layout
 
-const {Header, Content, Footer, Sider} = Layout;
-
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<MenuProps>['items'][number]
 
 // function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
 //     return {key, icon, children, label} as MenuItem;
 // }
 
-function getMyItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, parent_id?: number, id?: number): MyMenuItem {
-    return {label, key, icon, parent_id, id} as MyMenuItem;
+function getMyItem(
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  parent_id?: number,
+  id?: number
+): MyMenuItem {
+  return { label, key, icon, parent_id, id } as MyMenuItem
 }
 
 // const items: MenuItem[] = [
@@ -48,61 +54,85 @@ function getMyItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNod
 //     ]),
 // ];
 
-
 const Admin: React.FC = () => {
-    const {setUserName, setAvatar} = useStore()as any;
-    const routesElement = useRoutes(routes)
+  const { setUserName, setAvatar } = useStore() as any
+  const routesElement = useRoutes(routes)
 
-    let navigate = useNavigate();
+  let navigate = useNavigate()
 
-    const [menuItem, setMenuItem] = useState<MenuItem[]>([]);
+  const [menuItem, setMenuItem] = useState<MenuItem[]>([])
 
-    const [collapsed, setCollapsed] = useState(false);
-    const {
-        token: {colorBgContainer},
-    } = theme.useToken();
+  const [collapsed, setCollapsed] = useState(false)
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken()
 
-    useEffect(() => {
-        query_user_menu().then(res => {
-            setUserName(res.data.name)
-            setAvatar(res.data.avatar)
-            setMenuItem(tree(menuListTree(res.data.sys_menu), 0, "parent_id"))
-        })
-    }, []);
+  useEffect(() => {
+    query_user_menu().then((res) => {
+      setUserName(res.data.name)
+      setAvatar(res.data.avatar)
+      setMenuItem(tree(menuListTree(res.data.sys_menu), 0, 'parent_id'))
+    })
+  }, [])
 
+  const menuListTree = (menuList: RecordVo[]) => {
+    return menuList.map((item) => {
+      return getMyItem(
+        <span>{item.name}</span>,
+        item.path,
+        <PieChartOutlined />,
+        item.parent_id,
+        item.id
+      )
+    })
+  }
 
-    const menuListTree = (menuList: RecordVo[]) => {
-        return menuList.map(item => {
-            return getMyItem(<span>{item.name}</span>, item.path, <PieChartOutlined/>, item.parent_id, item.id)
-        })
-    }
+  return (
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
+        <Link to="/home" style={{ display: 'flex', alignItems: 'center' }}>
+          <img
+            style={{ height: 32, width: 32, margin: 16 }}
+            src={logo}
+            alt="logo"
+          />
+          <h1 style={{ marginBottom: 0, color: 'white', fontSize: 20 }}>
+            hello
+          </h1>
+        </Link>
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={['/home']}
+          mode="inline"
+          items={menuItem}
+          onClick={(item) => {
+            navigate(item.key)
+          }}
+        />
+      </Sider>
+      <Layout className="site-layout">
+        <Header
+          style={{ padding: 0, background: colorBgContainer, height: '40px' }}
+        >
+          <MyHeader></MyHeader>
+        </Header>
+        <Content style={{ margin: '0 16px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>User</Breadcrumb.Item>
+            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+          </Breadcrumb>
+          <div style={{ minHeight: 360, background: colorBgContainer }}>
+            {routesElement}
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>{t('写点东西在这里')}</Footer>
+      </Layout>
+    </Layout>
+  )
+}
 
-    return (
-        <Layout style={{minHeight: '100vh'}}>
-            <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                <Link to='/home' style={{display: "flex", alignItems: "center"}}>
-                    <img style={{height: 32, width: 32, margin: 16}} src={logo} alt="logo"/><h1
-                    style={{marginBottom: 0, color: "white", fontSize: 20}}>hello</h1>
-                </Link>
-                <Menu theme="dark" defaultSelectedKeys={['/home']} mode="inline" items={menuItem} onClick={(item) => {
-                    navigate(item.key)
-                }}/>
-            </Sider>
-            <Layout className="site-layout">
-                <Header style={{padding: 0, background: colorBgContainer,height:'40px'}}><MyHeader></MyHeader></Header>
-                <Content style={{margin: '0 16px'}}>
-                    <Breadcrumb style={{margin: '16px 0'}}>
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <div style={{minHeight: 360, background: colorBgContainer}}>
-                        {routesElement}
-                    </div>
-                </Content>
-                <Footer style={{textAlign: 'center'}}>写点东西在这里</Footer>
-            </Layout>
-        </Layout>
-    );
-};
-
-export default Admin;
+export default Admin
