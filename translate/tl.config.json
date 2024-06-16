@@ -1,0 +1,19 @@
+{
+  "file": "zh-CN.json",
+  "from": "zh-CN",
+  "json_key": "zh-cn",
+  "https_proxy": "",
+  "sigle_file": false,
+  "translate": [
+    {
+      "json_key": "en",
+      "t": "英文",
+      "to": "en"
+    },
+    {
+      "json_key": "zh-TW",
+      "t": "繁体中文",
+      "to": "zh-TW"
+    }
+  ]
+}
