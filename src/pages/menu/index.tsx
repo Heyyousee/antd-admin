@@ -27,7 +27,7 @@ const Menu: React.FC = () => {
   const tag_style = { height: 30, paddingTop: 4 };
   const columns: ColumnsType<MenuVo> = [
     {
-      title: t('菜单名称'),
+      title: t('名称'),
       dataIndex: 'menu_name',
       render: (text: string) => <a>{text}</a>,
     },

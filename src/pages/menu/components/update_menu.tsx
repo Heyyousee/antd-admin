@@ -1,8 +1,9 @@
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
-import { Form, Input, InputNumber, Modal, Radio } from 'antd'
+import { Form, Input, InputNumber, Modal, Radio, Select } from 'antd'
 import { MenuVo } from '../data'
 import TextArea from 'antd/es/input/TextArea'
+import { IconMaps } from '@/pages/admin/icons'
 
 interface UpdateMenuFormProps {
   open: boolean
@@ -18,7 +19,7 @@ const UpdateMenuForm: React.FC<UpdateMenuFormProps> = ({
   menuVo,
 }) => {
   const [menuType, setMenuType] = useState<number>(2)
-  const [menuName, setMenuName] = useState<string>(t('菜单名称'))
+  const [menuName, setMenuName] = useState<string>(t('名称'))
 
   const [form] = Form.useForm()
   const FormItem = Form.Item
@@ -27,13 +28,10 @@ const UpdateMenuForm: React.FC<UpdateMenuFormProps> = ({
     if (menuVo) {
       form.setFieldsValue(menuVo)
 
-      let ty = menuVo.menu_type
-      setMenuType(ty)
-      if (ty === 1) {
-        setMenuName(t('目录名称'))
-      } else {
-        setMenuName(ty === 2 ? t('菜单名称') : t('按钮名称'))
-      }
+      let v = menuVo.menu_type
+      setMenuType(v)
+      setMenuName(t('名称'))
+      
     }
   }, [menuVo])
 
@@ -103,9 +101,16 @@ const UpdateMenuForm: React.FC<UpdateMenuFormProps> = ({
           <FormItem
             label={t('图标')}
             name="icon"
-            rules={[{ required: true, message: t('请输入图标!') }]}
+            // rules={[{ required: true, message: t('请输入图标!') }]}
           >
-            <Input />
+            {/* <Input /> */}
+            <Select
+              style={{ width: '100%' }}
+            >
+              {Object.keys(IconMaps).map(icon => (
+                <Select.Option key={icon} value={icon}>{IconMaps[icon]} {icon}</Select.Option>
+              ))}
+          </Select>
           </FormItem>
         )}
 

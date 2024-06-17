@@ -8,10 +8,12 @@ import {
   Modal,
   Radio,
   RadioChangeEvent,
+  Select,
   TreeSelect,
 } from 'antd'
 import { MenuVo } from '../data'
 import TextArea from 'antd/es/input/TextArea'
+import { IconMaps } from '@/pages/admin/icons'
 
 interface CreateMenuFormProps {
   open: boolean
@@ -27,7 +29,7 @@ const CreateMenuForm: React.FC<CreateMenuFormProps> = ({
   menuListData,
 }) => {
   const [menuType, setMenuType] = useState<number>(2)
-  const [menuName, setMenuName] = useState<string>(t('菜单名称'))
+  const [menuName, setMenuName] = useState<string>(t('名称'))
 
   const [form] = Form.useForm()
   const FormItem = Form.Item
@@ -60,13 +62,10 @@ const CreateMenuForm: React.FC<CreateMenuFormProps> = ({
   }
 
   const onChange = (e: RadioChangeEvent) => {
-    let t = e.target.value
-    setMenuType(t)
-    if (t === 1) {
-      setMenuName(t('目录名称'))
-    } else {
-      setMenuName(t === 2 ? t('菜单名称') : t('按钮名称'))
-    }
+    let v = e.target.value
+    setMenuType(v)
+    setMenuName(t('名称'))
+    
   }
 
   const userFormContent = () => {
@@ -134,9 +133,26 @@ const CreateMenuForm: React.FC<CreateMenuFormProps> = ({
           <FormItem
             label={t('图标')}
             name="icon"
-            rules={[{ required: true, message: t('请输入图标!') }]}
+            // rules={[{ required: true, message: t('请选择图标')+'!' }]}
           >
-            <Input />
+            <Select
+              style={{ width: '100%' }}
+              placeholder={t('请选择图标')}
+            >
+              {Object.keys(IconMaps).map(icon => (
+                <Select.Option key={icon} value={icon}>{IconMaps[icon]} {icon}</Select.Option>
+              ))}
+          </Select>
+            
+            {/* <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Input readOnly value={selectedIcon} placeholder={t('选择图标')} />
+              <Button
+                type="default"
+                icon={<MenuOutlined />}
+                onClick={showModal}
+                style={{ marginLeft: '8px' }}
+              />
+            </div> */}
           </FormItem>
         )}
 
@@ -170,7 +186,7 @@ const CreateMenuForm: React.FC<CreateMenuFormProps> = ({
     labelCol: { span: 7 },
     wrapperCol: { span: 13 },
     form,
-    initialValues: { sort: 1, status_id: 1, menu_type: 2, icon: 'Setting' },
+    initialValues: { sort: 1, status_id: 1, menu_type: 2 },
   }
 
   return (
@@ -178,7 +194,9 @@ const CreateMenuForm: React.FC<CreateMenuFormProps> = ({
       <Form {...formLayout} style={{ marginTop: 30 }}>
         {userFormContent()}
       </Form>
+      
     </Modal>
+
   )
 }
 
