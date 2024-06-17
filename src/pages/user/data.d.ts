@@ -1,4 +1,3 @@
-import React from "react";
 
 export interface UserListParam {
     current: number;
@@ -21,4 +20,15 @@ export interface UserVo {
 export interface UserListSearch {
     mobile?: string;
     status_id?: number;
+}
+
+export const defaultUserVo: UserVo = {
+    create_time: '',
+    id: 0,
+    mobile: '',
+    user_name: '',
+    remark: '',
+    sort: 0,
+    status_id: 0,
+    update_time: '',
 }

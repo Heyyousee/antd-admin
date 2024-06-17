@@ -1,10 +1,10 @@
 import React from 'react';
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
-import {Button, Checkbox, Form, Input, message} from 'antd';
+import {Button, Checkbox, Form, Input} from 'antd';
 import "./index.less"
 import logo from '../../assets/images/logo.svg'
 import {reqLogin} from "./service";
-import {IResponse} from "../../api/ajax";
+import {IResponse, handleResp} from "../../api/ajax";
 import {useNavigate} from "react-router-dom";
 import {storageUtils} from "../../utils/storageUtils";
 import md5 from 'md5';
@@ -17,17 +17,15 @@ const Login: React.FC = () => {
     const onFinish = async (values: any) => {
         let { mobile, password } = values;
         password = md5(password);
-        let res: IResponse = await reqLogin({ mobile, password })
-        if (res.code === 0) {
+        let res: IResponse = await reqLogin({ mobile, password });
+        if (handleResp(res)) {
             storageUtils.saveToken(res.data)
             // if (res.data.user_id) {
             //     localStorage.setItem('user_id', res.data.user_id);
             // }
             navigate('/home')
-            message.success(res.msg);
-        } else {
-            message.error(res.msg);
         }
+        
     };
 
 

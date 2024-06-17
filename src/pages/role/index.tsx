@@ -1,6 +1,6 @@
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, message, Modal, Space, Table, Tag } from 'antd'
+import { Button, Divider, Modal, Space, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import {
   DeleteOutlined,
@@ -8,12 +8,11 @@ import {
   PlusOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
-import { RoleListSearch, RoleVo } from './data.d'
+import { RoleListSearch, RoleVo, defaultRoleVo } from './data.d'
 import CreateRoleForm from './components/add_role'
 import UpdateRoleForm from './components/update_role'
 import {
   addRole,
-  handleResp,
   removeRole,
   roleList,
   update_role_menu,
@@ -21,6 +20,7 @@ import {
 } from './service'
 import AdvancedSearchForm from './components/search_role'
 import SetRoleMenuForm from './components/set_role_menu'
+import { handleResp } from '@/api/ajax'
 
 const Role: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
@@ -28,15 +28,7 @@ const Role: React.FC = () => {
   const [isShowEditModal, setShowEditModal] = useState<boolean>(false)
   const [isShowMenuModal, setShowMenuModal] = useState<boolean>(false)
   const [roleListData, setRoleListData] = useState<RoleVo[]>([])
-  const [currentRole, setCurrentRole] = useState<RoleVo>({
-    create_time: '',
-    id: 0,
-    remark: '',
-    role_name: '',
-    sort: 0,
-    status_id: 0,
-    update_time: '',
-  })
+  const [currentRole, setCurrentRole] = useState<RoleVo>(defaultRoleVo)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
   const [total, setTotal] = useState<number>(10)
@@ -44,6 +36,7 @@ const Role: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [search, setSearch] = useState<RoleListSearch>()
 
+  const tag_style = { height: 30, paddingTop: 4 };
   const columns: ColumnsType<RoleVo> = [
     {
       title: t('角色名称'),
@@ -62,12 +55,7 @@ const Role: React.FC = () => {
           {
             <Tag
               color={status_id === 0 ? '#ff4d4f' : '#67c23a'}
-              style={{
-                width: 50,
-                height: 30,
-                textAlign: 'center',
-                paddingTop: 4,
-              }}
+              style={tag_style}
             >
               {status_id === 0 ? t('禁用') : t('启用')}
             </Tag>
@@ -191,12 +179,10 @@ const Role: React.FC = () => {
   }
 
   const handleSearchOk = async (role: RoleVo) => {
-    let res = await roleList({ current: currentPage, pageSize, ...role })
-    setTotal(res.total)
-    res.code === 0 ? setRoleListData(res.data) : message.error(res.msg)
     setSearch({
       ...role,
     })
+    setNeedLoad(!needLoad)
   }
 
   const handleResetOk = async () => {
@@ -210,8 +196,10 @@ const Role: React.FC = () => {
     }
     setLoading(true)
     let res = await roleList({ current: currentPage, pageSize, ...search })
-    setTotal(res.total)
-    res.code === 0 ? setRoleListData(res.data) : message.error(res.msg)
+    if (handleResp(res)) {
+      setTotal(res.total)
+      setRoleListData(res.data) 
+    }
     setTimeout(() => {
       setLoading(false)
     }, 1000)

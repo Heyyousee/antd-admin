@@ -42,5 +42,5 @@ export const showMessage = (status: number | string) => {
       msg = t('message.status-default')
   }
   // return `${message}，请检查网络或联系管理员！`;
-  message.error('${message}')
+  message.error(msg);
 }

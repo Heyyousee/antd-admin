@@ -1,9 +1,7 @@
 import { t } from 'i18next'
-// @flow
+
 import { Link, useNavigate, useRoutes } from 'react-router-dom'
-
 import routes from '../../router'
-
 import React, { useEffect, useState } from 'react'
 import { PieChartOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
@@ -15,6 +13,7 @@ import { MyMenuItem, RecordVo } from './data'
 import { tree } from '../../utils/treeUtils'
 import './index.less'
 import useStore from '../../store'
+import DynamicIcon from './IconComponent'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -72,7 +71,8 @@ const Admin: React.FC = () => {
       setUserName(res.data.name)
       setAvatar(res.data.avatar)
       setMenuItem(tree(menuListTree(res.data.sys_menu), 0, 'parent_id'))
-    })
+    }).catch((err) => {
+    });
   }, [])
 
   const menuListTree = (menuList: RecordVo[]) => {
@@ -81,6 +81,7 @@ const Admin: React.FC = () => {
         <span>{item.name}</span>,
         item.path,
         <PieChartOutlined />,
+        // <DynamicIcon iconName={item.icon} />,
         item.parent_id,
         item.id
       )

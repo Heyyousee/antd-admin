@@ -55,14 +55,14 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
           name="sort"
           rules={[{ required: true, message: t('请输入排序!') }]}
         >
-          <InputNumber defaultValue={1} />
+          <InputNumber />
         </FormItem>
         <FormItem
           label={t('状态')}
           name="status_id"
           rules={[{ required: true, message: t('请输入状态!') }]}
         >
-          <Radio.Group defaultValue={1}>
+          <Radio.Group>
             <Radio value={1}>{t('启用')}</Radio>
             <Radio value={0}>{t('禁用')}</Radio>
           </Radio.Group>
@@ -87,7 +87,12 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
     open,
     width: 480,
   }
-  const formLayout = { labelCol: { span: 7 }, wrapperCol: { span: 13 }, form }
+  const formLayout = {
+    labelCol: { span: 7 },
+    wrapperCol: { span: 13 },
+    form,
+    initialValues: { sort: 1, status_id: 1 },
+  }
 
   return (
     <Modal {...modalFooter} style={{ top: 150 }}>

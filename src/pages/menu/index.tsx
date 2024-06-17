@@ -1,6 +1,6 @@
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, message, Modal, Space, Table, Tag } from 'antd'
+import { Button, Divider, Modal, Space, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { MenuVo } from './data.d'
@@ -8,13 +8,12 @@ import CreateMenuForm from './components/add_menu'
 import UpdateMenuForm from './components/update_menu'
 import {
   addMenu,
-  handleResp,
   menuList,
   removeMenu,
   updateMenu,
 } from './service'
 import { tree } from '../../utils/treeUtils'
-import { IResponse } from '../../api/ajax'
+import { IResponse, handleResp } from '../../api/ajax'
 
 const Menu: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
@@ -25,6 +24,7 @@ const Menu: React.FC = () => {
   const [needLoad, setNeedLoad] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
 
+  const tag_style = { height: 30, paddingTop: 4 };
   const columns: ColumnsType<MenuVo> = [
     {
       title: t('菜单名称'),
@@ -47,12 +47,8 @@ const Menu: React.FC = () => {
           {menu_type === 1 && (
             <Tag
               color={'#ef62df'}
-              style={{
-                width: 50,
-                height: 30,
-                textAlign: 'center',
-                paddingTop: 4,
-              }}
+              style={tag_style}
+             
             >
               {t('目录')}
             </Tag>
@@ -61,12 +57,7 @@ const Menu: React.FC = () => {
           {menu_type === 2 && (
             <Tag
               color={'#3f80e9'}
-              style={{
-                width: 50,
-                height: 30,
-                textAlign: 'center',
-                paddingTop: 4,
-              }}
+              style={tag_style}
             >
               {t('菜单')}
             </Tag>
@@ -75,12 +66,7 @@ const Menu: React.FC = () => {
           {menu_type === 3 && (
             <Tag
               color={'#67c23a'}
-              style={{
-                width: 50,
-                height: 30,
-                textAlign: 'center',
-                paddingTop: 4,
-              }}
+              style={tag_style}
             >
               {t('功能')}
             </Tag>
@@ -104,12 +90,7 @@ const Menu: React.FC = () => {
           {
             <Tag
               color={status_id === 0 ? '#ff4d4f' : '#67c23a'}
-              style={{
-                width: 50,
-                height: 30,
-                textAlign: 'center',
-                paddingTop: 4,
-              }}
+              style={tag_style}
             >
               {status_id === 0 ? t('禁用') : t('启用')}
             </Tag>
@@ -216,8 +197,10 @@ const Menu: React.FC = () => {
     }
     setLoading(true)
     let res = await menuList({})
+    if (handleResp(res)) {
+      setMenuDataTree(res);
     // setTotal(res.total)
-    res.code === 0 ? setMenuDataTree(res) : message.error(res.msg)
+    }
     setTimeout(() => {
       setLoading(false)
     }, 1000)

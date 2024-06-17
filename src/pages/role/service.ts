@@ -1,6 +1,5 @@
 import {axiosInstance, IResponse} from "../../api/ajax";
 import {RoleVo, RoleListParam} from "./data";
-import {message} from "antd";
 
 /**
  * @description: 角色列表
@@ -54,13 +53,4 @@ export const query_role_menu = (role_id: Number): Promise<IResponse> => {
  */
 export const update_role_menu = (role_id: Number, menu_ids: Number[]): Promise<IResponse> => {
     return axiosInstance.post('api/update_role_menu', {role_id: role_id, menu_ids: menu_ids}).then(res => res.data);
-};
-
-/**
- * 统一处理
- * @param resp
- */
-export const handleResp = (resp: IResponse): boolean => {
-    resp.code === 0 ? message.success(resp.msg) : message.error(resp.msg);
-    return resp.code === 0
 };

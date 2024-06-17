@@ -1,6 +1,6 @@
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, message, Modal, Space, Table, Tag } from 'antd'
+import { Button, Divider, Modal, Space, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import {
   DeleteOutlined,
@@ -8,12 +8,11 @@ import {
   PlusOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
-import { UserListSearch, UserVo } from './data.d'
+import { UserListSearch, UserVo, defaultUserVo } from './data.d'
 import CreateUserForm from './components/add_user'
 import UpdateUserForm from './components/update_user'
 import {
   addUser,
-  handleResp,
   removeUser,
   update_user_role,
   updateUser,
@@ -21,6 +20,7 @@ import {
 } from './service'
 import AdvancedSearchForm from './components/search_user'
 import SetUserRoleForm from './components/set_user_role'
+import { handleResp } from '@/api/ajax'
 
 const User: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
@@ -28,16 +28,7 @@ const User: React.FC = () => {
   const [isShowEditModal, setShowEditModal] = useState<boolean>(false)
   const [isShowRoleModal, setShowRoleModal] = useState<boolean>(false)
   const [userListData, setUserListData] = useState<UserVo[]>([])
-  const [currentUser, setCurrentUser] = useState<UserVo>({
-    create_time: '',
-    id: 0,
-    mobile: '',
-    user_name: '',
-    remark: '',
-    sort: 0,
-    status_id: 0,
-    update_time: '',
-  })
+  const [currentUser, setCurrentUser] = useState<UserVo>(defaultUserVo)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
   const [total, setTotal] = useState<number>(10)
@@ -45,6 +36,7 @@ const User: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [search, setSearch] = useState<UserListSearch>()
 
+  const tag_style = { height: 30, paddingTop: 4 };
   const columns: ColumnsType<UserVo> = [
     {
       title: t('手机号'),
@@ -67,12 +59,7 @@ const User: React.FC = () => {
           {
             <Tag
               color={status_id === 0 ? '#ff4d4f' : '#67c23a'}
-              style={{
-                width: 50,
-                height: 30,
-                textAlign: 'center',
-                paddingTop: 4,
-              }}
+              style={tag_style}
             >
               {status_id === 0 ? t('禁用') : t('启用')}
             </Tag>
@@ -213,8 +200,10 @@ const User: React.FC = () => {
     }
     setLoading(true)
     let res = await userList({ current: currentPage, pageSize, ...search })
-    setTotal(res.total)
-    res.code === 0 ? setUserListData(res.data) : message.error(res.msg)
+    if (handleResp(res)) {
+      setUserListData(res.data);
+      setTotal(res.total);
+    }
     setTimeout(() => {
       setLoading(false)
     }, 1000)

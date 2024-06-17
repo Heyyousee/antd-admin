@@ -51,6 +51,7 @@ axiosInstance.interceptors.response.use(
             if (response.status === 401) {
                 storageUtils.logout()
                 window.location.href = "/login";
+                return;
             }
             return Promise.reject(response.message);
             
@@ -80,3 +81,18 @@ axiosInstance.interceptors.request.use(
 
 
 
+/**
+ * 统一处理
+ * @param resp
+ */
+export const handleResp = (resp: IResponse): boolean => {
+    // resp.code === 0 ? message.success(resp.msg) : message.error(resp.msg);
+    if (resp.code === 0) {
+        message.success(resp.msg);
+    } else {
+        if (resp.msg) {
+            message.error(resp.msg);
+        }
+    }
+    return resp.code === 0
+};

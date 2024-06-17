@@ -39,7 +39,7 @@ const langs: MenuProps['items'] = [
 const SelectLang: React.FC = () => {
   // #region 切换语言
   const lang = storageUtils.getI18n()
-  const [language, setLanguage] = useState(lang)
+  const [, setLanguage] = useState(lang)
   const languageChange = (value: any) => {
     console.log('=====languageChange==== ' + value)
     setLanguage(value)

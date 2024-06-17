@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface RoleListParam {
     current: number;
     pageSize?: number;
@@ -20,4 +18,14 @@ export interface RoleVo {
 export interface RoleListSearch{
     role_name?: string;
     status_id?: number;
+}
+
+export const defaultRoleVo: RoleVo = {
+    create_time: '',
+    id: 0,
+    remark: '',
+    role_name: '',
+    sort: 0,
+    status_id: 0,
+    update_time: '',
 }

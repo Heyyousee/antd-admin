@@ -8,7 +8,7 @@ interface UpdateUserFormProps {
   open: boolean
   onCreate: (values: UserVo) => void
   onCancel: () => void
-  userVo?: UserVo
+  userVo: UserVo
 }
 
 const UpdateUserForm: React.FC<UpdateUserFormProps> = ({
@@ -24,7 +24,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({
     if (userVo) {
       form.setFieldsValue(userVo)
     }
-  }, [userVo])
+  }, [open])
 
   const handleOk = () => {
     form

@@ -1,5 +1,5 @@
 import { t } from 'i18next'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { SearchOutlined } from '@ant-design/icons'
 import { Button, Form, Input, Select, Space } from 'antd'
 import { UserVo } from '../data'
@@ -19,6 +19,8 @@ const AdvancedSearchForm: React.FC<CreateUserFormProps> = ({
   const [form] = Form.useForm()
 
   const onFinish = (values: any) => {
+    // let status_id = values.status_id ? parseInt(values.status_id, 10) : undefined;
+    // values.status_id = status_id;
     search(values)
   }
 
