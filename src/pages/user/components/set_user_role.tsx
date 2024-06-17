@@ -15,7 +15,7 @@ interface UpdateUserFormProps {
 
 const columns: ColumnsType<RoleVo> = [
   {
-    title: t('角色名称'),
+    title: t('名称'),
     dataIndex: 'role_name',
     render: (text: string) => <a>{text}</a>,
   },

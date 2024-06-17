@@ -9,7 +9,6 @@ import Pie from "../pages/charts/pie";
 import Log from "../pages/log/index";
 import Center from "../pages/account/center";
 import Setting from "../pages/account/settings";
-import { basename } from "path";
 
 const routes = [
     {

@@ -45,7 +45,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({
           <Input />
         </FormItem>
         <FormItem
-          label={t('角色名称')}
+          label={t('名称')}
           name="role_name"
           rules={[{ required: true, message: t('请输入角色名称!') }]}
         >

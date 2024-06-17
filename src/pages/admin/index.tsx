@@ -3,7 +3,6 @@ import { t } from 'i18next'
 import { Link, useNavigate, useRoutes } from 'react-router-dom'
 import routes from '../../router'
 import React, { useEffect, useState } from 'react'
-import { PieChartOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Breadcrumb, Layout, Menu, theme } from 'antd'
 import logo from '../../assets/images/logo.svg'
@@ -13,7 +12,7 @@ import { MyMenuItem, RecordVo } from './data'
 import { tree } from '../../utils/treeUtils'
 import './index.less'
 import useStore from '../../store'
-import DynamicIcon from './IconComponent'
+import DynamicIcon from './icons'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -80,8 +79,8 @@ const Admin: React.FC = () => {
       return getMyItem(
         <span>{item.name}</span>,
         item.path,
-        <PieChartOutlined />,
-        // <DynamicIcon iconName={item.icon} />,
+        // <PieChartOutlined />,
+        <DynamicIcon iconName={item.icon} />,
         item.parent_id,
         item.id
       )

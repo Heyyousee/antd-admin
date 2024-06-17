@@ -25,14 +25,13 @@ export const axiosInstance: AxiosInstance = axios.create({
 // axios实例拦截响应
 axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
-        // if (response.headers.authorization) {
-        //     localStorage.setItem('app_token', response.headers.authorization);
-        // } else {
-        //     if (response.data && response.data.token) {
-        //         localStorage.setItem('app_token', response.data.token);
-        //     }
-        // }
-
+       // 刷新token
+        const token = response.headers.Authorization;
+        if (token) {
+            console.log('token', token);
+            const tokenStr = token.replace('Bearer ', '');
+            storageUtils.saveToken(tokenStr);
+        }
         if (response.status === 200) {
             return response;
         } else {

@@ -38,7 +38,6 @@
   "message.status-502": "Network Error (502)",
   "message.status-503": "Service Unavailable (503)",
   "message.status-default": "Connection error ({0})!",
-
   "HTTP版本不受支持(505)": "HTTP version not supported (505)",
   "写点东西在这里": "Write something here",
   "ECharts 入门示例": "ECharts starter example",
@@ -100,9 +99,6 @@
   "已选择": "Selected",
   "项": "Item",
   "批量删除": "Batch deletion",
-  "菜单名称": "Menu name",
-  "目录名称": "Directory name",
-  "按钮名称": "Button name",
   "类型": "Type",
   "目录": "Directory",
   "菜单": "Menu",
@@ -115,11 +111,11 @@
   "接口地址": "Interface address",
   "请输入接口地址!": "Please enter the interface address!",
   "图标": "Icon",
-  "请输入图标!": "Please enter the icon!",
   "功能": "Feature",
-  "角色名称": "Role name",
   "请输入角色名称!": "Please enter a role name!",
   "设置菜单": "Setup menu",
   "设置角色": "Set a role",
-  "一个游客": "Tourist"
+  "一个游客": "Tourist",
+  "名称": "Name",
+  "请选择图标": "Please select an icon."
 }

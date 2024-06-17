@@ -35,7 +35,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
     return (
       <>
         <FormItem
-          label={t('角色名称')}
+          label={t('名称')}
           name="role_name"
           rules={[{ required: true, message: t('请输入手机号!') }]}
         >
@@ -62,7 +62,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({
         <FormItem
           label={t('备注')}
           name="remark"
-          rules={[{ required: true, message: t('请输入备注!') }]}
+          // rules={[{ required: true, message: t('请输入备注!') }]}
         >
           <TextArea rows={2} />
         </FormItem>
