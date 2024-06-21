@@ -21,7 +21,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({
   const FormItem = Form.Item
 
   useEffect(() => {
-    if (userVo) {
+    if (open && userVo) {
       form.setFieldsValue(userVo)
     }
   }, [open])

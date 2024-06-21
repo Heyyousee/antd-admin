@@ -25,15 +25,20 @@ const SetRoleMenuForm: React.FC<UpdateUserFormProps> = ({
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
 
   useEffect(() => {
+    if (!open) {
+      return
+    }
     if (roleVo) {
       form.setFieldsValue(roleVo)
     }
     setCheckedKeys([])
     query_role_menu(roleVo.id || 0).then((res) => {
-      // @ts-ignore
-      setTreeData(tree(res.data.menu_list, 0, 'parent_id'))
-      if (res.data.role_menus) {
-        setCheckedKeys(res.data.role_menus.map((r: number) => r + ''))
+      if (res.code === 0) {
+        // @ts-ignore
+        setTreeData(tree(res.data.menu_list, 0, 'parent_id'))
+        if (res.data.role_menus) {
+          setCheckedKeys(res.data.role_menus.map((r: number) => r + ''))
+        }
       }
     })
   }, [open])

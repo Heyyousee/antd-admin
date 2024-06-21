@@ -69,7 +69,9 @@ const Admin: React.FC = () => {
   useEffect(() => {
     query_user_menu().then((res) => {
       setUserName(res.data.name)
-      setAvatar(res.data.avatar)
+      if (res.data.avatar) {
+        setAvatar(res.data.avatar)
+      }
       setMenuVo(res.data.sys_menu)
       const menu = tree(menuListTree(res.data.sys_menu), 0, 'parent_id')
       setMenuItem(menu)
@@ -90,11 +92,11 @@ const Admin: React.FC = () => {
     })
   }
 
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
+  // const [openKeys, setOpenKeys] = useState<string[]>([]);
 
-  const onOpenChange = (keys: string[]) => {
-    setOpenKeys(keys);
-  };
+  // const onOpenChange = (keys: string[]) => {
+  //   setOpenKeys(keys);
+  // };
 
   const getFarthers = (path: string): string[] => {
     let meun = menuVo.find((item) => item.path === path);
