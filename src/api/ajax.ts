@@ -26,10 +26,11 @@ export const axiosInstance: AxiosInstance = axios.create({
 // axios实例拦截响应
 axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
-       // 刷新token
-        const token = response.headers.Authorization;
+        // 刷新token
+        // console.log('response headers', response.headers);
+        const token = response.headers['authorization'];
         if (token) {
-            console.log('token', token);
+            // console.log('authorization: ', token);
             const tokenStr = token.replace('Bearer ', '');
             storageUtils.saveToken(tokenStr);
         }
@@ -50,10 +51,13 @@ axiosInstance.interceptors.response.use(
             showMessage(response.status);
             if (response.status === 401) {
                 storageUtils.logout()
-                window.location.href = "/login";
-                return;
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 1000);
+                
             }
-            return Promise.reject(response.message);
+            return {data:{}}
+            // return Promise.reject(response.message);
             
         } else {
             message.error(t('message.network-error'));

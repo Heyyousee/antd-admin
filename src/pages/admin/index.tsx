@@ -1,10 +1,10 @@
 import { t } from 'i18next'
 
-import { Link, useNavigate, useRoutes } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import routes from '../../router'
 import React, { useEffect, useState } from 'react'
 import type { MenuProps } from 'antd'
-import { Breadcrumb, Layout, Menu, theme } from 'antd'
+import { Breadcrumb, Button, Layout, Menu, theme } from 'antd'
 import logo from '../../assets/images/logo.svg'
 import MyHeader from '../../components/header'
 import { query_user_menu } from './service'
@@ -13,6 +13,7 @@ import { tree } from '../../utils/treeUtils'
 import './index.less'
 import useStore from '../../store'
 import DynamicIcon from './icons'
+import {MenuUnfoldOutlined, MenuFoldOutlined} from '@ant-design/icons'
 import TabPanes from '@/components/tabPanes'
 import tabsPageStore, { usePanesState  } from '@/store/tabsPageStore'
 
@@ -64,19 +65,23 @@ const Admin: React.FC = () => {
   const routesElement = useRoutes(routes)
 
   let navigate = useNavigate()
-
+  const location = useLocation();
   const [menuItem, setMenuItem] = useState<MenuItem[]>([])
-
+  const [menuVo, setMenuVo] = useState<RecordVo[]>([])
   const [collapsed, setCollapsed] = useState(false)
   const {
-    token: { colorBgContainer },
+    token: { colorBgContainer,borderRadiusLG  },
   } = theme.useToken()
 
   useEffect(() => {
     query_user_menu().then((res) => {
       setUserName(res.data.name)
-      setAvatar(res.data.avatar)
-      setMenuItem(tree(menuListTree(res.data.sys_menu), 0, 'parent_id'))
+      if (res.data.avatar) {
+        setAvatar(res.data.avatar)
+      }
+      setMenuVo(res.data.sys_menu)
+      const menu = tree(menuListTree(res.data.sys_menu), 0, 'parent_id')
+      setMenuItem(menu)
       // 保存菜单数据到状态管理中
       setMenuList(tree(res.data.sys_menu, 0, 'parent_id'))
     }).catch((err) => {
@@ -96,9 +101,31 @@ const Admin: React.FC = () => {
     })
   }
 
+  // const [openKeys, setOpenKeys] = useState<string[]>([]);
+
+  // const onOpenChange = (keys: string[]) => {
+  //   setOpenKeys(keys);
+  // };
+
+  const getFarthers = (path: string): string[] => {
+    let meun = menuVo.find((item) => item.path === path);
+    if (meun && meun.parent_id) {
+      let pid = meun.parent_id;
+      let parent = menuVo.find((item) => item.id === pid);
+      if (parent && parent.path) {
+        return [...getFarthers(parent.path)]
+      }
+    }
+    return [path]
+  };
+
+  const mytheme = "light";
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider
+        trigger={null}
+        breakpoint="lg"
+        theme= {mytheme}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
@@ -114,8 +141,10 @@ const Admin: React.FC = () => {
           </h1>
         </Link>
         <Menu
-          theme="dark"
-          defaultSelectedKeys={['/home']}
+          theme= {mytheme}
+          defaultSelectedKeys={[location.pathname]}
+          defaultOpenKeys={getFarthers(location.pathname)}
+          // onOpenChange={onOpenChange}
           mode="inline"
           items={menuItem}
           onClick={(item) => {
@@ -128,9 +157,22 @@ const Admin: React.FC = () => {
           style={{ padding: 0, background: colorBgContainer, height: '40px' }}
         >
           <MyHeader></MyHeader>
+
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              width: 40,
+              height: 40,
+              marginLeft: '2px',
+              top: 0,
+              position: 'absolute',
+            }}
+          />
         </Header>
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
+        <Content style={{ margin: '2px 2px', background: colorBgContainer, borderRadius: borderRadiusLG }}>
+          <Breadcrumb style={{ margin: '2px 2px' }}>
             {breadCrumbs.map((item, i) => (
               <Breadcrumb.Item key={i}>{item}</Breadcrumb.Item>
             ))}
