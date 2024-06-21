@@ -13,6 +13,8 @@ import { tree } from '../../utils/treeUtils'
 import './index.less'
 import useStore from '../../store'
 import DynamicIcon from './icons'
+import TabPanes from '@/components/tabPanes'
+import tabsPageStore, { usePanesState  } from '@/store/tabsPageStore'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -53,7 +55,12 @@ function getMyItem(
 // ];
 
 const Admin: React.FC = () => {
-  const { setUserName, setAvatar } = useStore() as any
+  const {setUserName, setAvatar} = useStore() as any
+  // 设置菜单列表Store
+  const { setMenuList } = tabsPageStore()
+  // 面包屑
+  const { breadCrumbs } = usePanesState()
+
   const routesElement = useRoutes(routes)
 
   let navigate = useNavigate()
@@ -70,6 +77,8 @@ const Admin: React.FC = () => {
       setUserName(res.data.name)
       setAvatar(res.data.avatar)
       setMenuItem(tree(menuListTree(res.data.sys_menu), 0, 'parent_id'))
+      // 保存菜单数据到状态管理中
+      setMenuList(tree(res.data.sys_menu, 0, 'parent_id'))
     }).catch((err) => {
     });
   }, [])
@@ -122,12 +131,14 @@ const Admin: React.FC = () => {
         </Header>
         <Content style={{ margin: '0 16px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            {breadCrumbs.map((item, i) => (
+              <Breadcrumb.Item key={i}>{item}</Breadcrumb.Item>
+            ))}
           </Breadcrumb>
-          <div style={{ minHeight: 360, background: colorBgContainer }}>
-            {routesElement}
-          </div>
+          <TabPanes/>
+          {/*<div style={{ minHeight: 360, background: colorBgContainer }}>*/}
+          {/*  {routesElement}*/}
+          {/*</div>*/}
         </Content>
         <Footer style={{ textAlign: 'center' }}>{t('写点东西在这里')}</Footer>
       </Layout>

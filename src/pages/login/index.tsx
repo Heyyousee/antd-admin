@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Button, Checkbox, Form, Input} from 'antd';
 import "./index.less"
@@ -10,10 +10,54 @@ import {storageUtils} from "../../utils/storageUtils";
 import md5 from 'md5';
 import { t } from 'i18next';
 import SelectLang from '../../components/selectLang';
+import tabsPageStore, { usePanesState  } from '@/store/tabsPageStore'
+import type { MenuProps } from 'antd';
+
 
 const Login: React.FC = () => {
+    const items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: (
+                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                    1st menu item
+                </a>
+            ),
+        },
+        {
+            key: '2',
+            label: (
+                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+                    2nd menu item
+                </a>
+            ),
+        },
+        {
+            key: '3',
+            label: (
+                <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+                    3rd menu item
+                </a>
+            ),
+        },
+    ];
+    const { setMenuList } = tabsPageStore()
+    const { setPanesTab, setBreadCrumbs } = usePanesState();
+    // 组件创建成功初始化
+    useEffect(() => {
+        // 清除菜单数据，面包屑，页签
+        setMenuList([])
+        setPanesTab([
+            {
+                key: '/home',
+                path: '/home',
+                label: '首页',
+                closable: false
+            }
+        ])
+        setBreadCrumbs([])
+    }, []); // 空数组作为依赖项，确保这个 effect 只在挂载和卸载时运行
     let navigate = useNavigate();
-
     const onFinish = async (values: any) => {
         let { mobile, password } = values;
         password = md5(password);

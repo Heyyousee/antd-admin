@@ -15,6 +15,7 @@ export interface IResponse {
 
 export const axiosInstance: AxiosInstance = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
+    // baseURL: "http://210.209.76.58:13004",
     headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
